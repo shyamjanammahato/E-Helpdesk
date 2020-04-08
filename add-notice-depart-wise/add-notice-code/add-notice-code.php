@@ -1,0 +1,150 @@
+<?php
+  include '../../config.php';
+  include '../../functions.php';
+
+$get_query=mysqli_query($conn,"SELECT * FROM login_tbl where mail_id='$id1' ");
+if($row_query=mysqli_fetch_array($get_query))
+{
+    $unique_id=$row_query['u_id'];
+}
+$dt=date("Y/m/d");
+$time= date("h:i:sa");
+    if ($_SERVER["REQUEST_METHOD"] == "POST")
+    {
+      $notice_title=$_POST['notice_title'];
+      $notice_descp=$_POST['notice_descp'];
+      $type=$_POST['type'];
+      $notice_descp_encode=base64_encode($notice_descp);
+      
+      if(isset($depart_id))
+      {
+        $depart_id=$_POST['depart_id'];
+      }
+      else
+      {
+        $depart_id="null";
+      }
+      if($type=='3')
+      {
+        $select_copy=$_POST['select_copy'];
+      }
+      else
+      {
+        $select_copy='-1';
+      }
+      if($notice_title=='')
+      {
+        echo '2';
+      }
+      else if($depart_id=='')
+      {
+        echo '3';
+      }
+      else if($select_copy=='0')
+      {
+        echo '11';
+      }
+      else if($notice_descp=='')
+      {
+        echo '0';
+      }
+      else
+      {
+        if (basename( $_FILES["file"]["name"])!='')
+        {
+          $folder = "../../files/notice";
+          $temp = explode(".", $_FILES["file"]["name"]);
+          $newfilename = round(microtime(true)).'.'. end($temp);
+          $db_path =$newfilename;
+          $listtype = array(
+          '.doc'=>'application/msword',
+          '.docx'=>'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          '.jpeg'=> 'image/jpeg',
+          '.pdf'=>'application/pdf'); 
+
+          $pic2="../../files/notice/".$db_path;
+
+          move_uploaded_file($_FILES["file"]["tmp_name"],$pic2);
+
+                if($type=='2')
+                {
+                  $table="notice_tbl";
+                  $data='';
+                  $data.="'$id1'";
+                  $data.=",'$depart_id'";
+                  $data.=",'$notice_title'";
+                  $data.=",'$notice_descp_encode'";
+                  $data.=",'$db_path'";
+                  $data.=",'2'";
+                  $data.=",'$select_copy'";
+                  $data.=",'$dt'";
+                  $data.=",'$time'";
+                  $data.=",'$id1'";
+                  $data.=",'1'";
+
+                  $insert = insert($table,$data);
+                  echo "1";
+                }
+                else
+                {
+                  $table="notice_tbl";
+                  $data='';
+                  $data.="'$id1'";
+                  $data.=",'$depart_id'";
+                  $data.=",'$notice_title'";
+                  $data.=",'$notice_descp_encode'";
+                  $data.=",'$db_path'";
+                  $data.=",'3'";
+                  $data.=",'$select_copy'";
+                  $data.=",'$dt'";
+                  $data.=",'$time'";
+                  $data.=",'$id1'";
+                  $data.=",'1'";
+
+                  $insert = insert($table,$data);
+                  echo "1";
+                }
+        }
+        else
+        {
+          if($type=='2')
+          {
+            $table="notice_tbl";
+            $data='';
+            $data.="'$unique_id'";
+            $data.=",'$depart_id'";
+            $data.=",'$notice_title'";
+            $data.=",'$notice_descp_encode'";
+            $data.=",'null'";
+            $data.=",'2'";
+            $data.=",'$select_copy'";
+            $data.=",'$dt'";
+            $data.=",'$time'";
+            $data.=",'$id1'";
+            $data.=",'1'";
+
+            $insert = insert($table,$data);
+            echo "1";
+          }
+          else
+          {
+            $table="notice_tbl";
+            $data='';
+            $data.="'$unique_id'";
+            $data.=",'$depart_id'";
+            $data.=",'$notice_title'";
+            $data.=",'$notice_descp_encode'";
+            $data.=",'null'";
+            $data.=",'3'";
+            $data.=",'$select_copy'";
+            $data.=",'$dt'";
+            $data.=",'$time'";
+            $data.=",'$id1'";
+            $data.=",'1'";
+            $insert = insert($table,$data);
+            echo "1"; 
+          }
+        }
+      }
+    }
+?>
