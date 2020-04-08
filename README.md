@@ -1,2 +1,2 @@
 # E-Helpdesk
-E-Helpdesk for College Capus
+E-Helpdesk for College Campus
